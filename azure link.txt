@@ -1,0 +1,7 @@
+host:
+
+servidor-bacana.mysql.database.azure.com
+
+senha:
+
+1Senha!minha

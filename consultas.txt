@@ -1,0 +1,53 @@
+# A #
+select t.title from tasks t 
+join status s on s.task_fk=t.id 
+where t.id not in (select s.task_fk from status s where s.progress = 'in progress');
+
+# B #
+select l.nome from locais l 
+join tasks t on t.ambient = l.id
+group by l.id
+having count(l.id) > 2;
+
+# C #
+select distinct u.nome, count(u.id) as CONTAGEM from usuarios u 
+join requester_responsibles rr on rr.responsible_fk = u.id 
+group by u.id having count(u.id) > 2;
+
+# D # 
+select * from eventos e 
+join locais l on e.localFk = l.id 
+join tasks t on t.ambient = e.localFk 
+where (e.inicio > now() and t.term is null); 
+
+# E # 
+select l.nome as LOCAL, count(t.id) as CONTAGEM from locais l 
+join tasks t on t.ambient = l.id 
+group by l.nome;
+
+# F #
+select l.nome as LOCAL, count(t.id) as CONTAGEM from locais l 
+join tasks t on t.ambient = l.id 
+where(t.term is not null) 
+group by l.nome;
+
+# G # 
+select distinct u.nome, count(u.id) as CONTAGEM from usuarios u 
+join requester_responsibles rr on rr.responsible_fk = u.id 
+group by u.id;
+
+# H #
+select distinct u.nome, count(u.id) as CONTAGEM from usuarios u 
+join requester_responsibles rr on rr.responsible_fk = u.id 
+join tasks t on t.id = rr.task_fk
+where (t.term is not null)
+group by u.id ;
+
+# I #
+select mes, round(avg(t.count), 2) media from locais l 
+inner join (
+    select t.ambient, month(s.moment) mes, count(*) count from tasks t join status s on s.task_fk = t.id
+    where s.progress = 'open'
+    group by t.ambient, s.moment
+) t on l.id = t.ambient
+group by l.id, t.mes;
